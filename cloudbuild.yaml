@@ -1,0 +1,36 @@
+steps:
+  # Docker Build
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t',
+           '${_LOCATION}-docker.pkg.${_ENV}/${_PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_IMAGE_NAME}:${_SHORT_SHA}', '.']
+
+  # Docker push to Google Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push',  '${_LOCATION}-docker.pkg.${_ENV}/${_PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_IMAGE_NAME}:${_SHORT_SHA}']
+
+  # Deploy to Cloud Run
+  #- name: google/cloud-sdk
+  #  args: ['gcloud', 'run', 'deploy', 'anthony-infra-app-${_SHORT_SHA}',
+  #         '--image=${_LOCATION}-docker.pkg.${_ENV}/${_PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/${_IMAGE_NAME}:${_SHORT_SHA}',
+  #         '--region', '${_LOCATION}', '--platform', 'managed',
+  #         '--allow-unauthenticated']
+  # init Terraform
+  # - name: 'gcr.io/cloud-builders/terraform:1.5.0'
+  - name: 'hashicorp/terraform:1.5.0'
+    id: 'Terraform init'
+    args: ['init']
+  - name: 'hashicorp/terraform:1.5.0'
+    id: 'Terraform apply'
+    args:
+      - 'apply'
+      - '-auto-approve'
+      - '-var=image_tag=${_SHORT_SHA}'
+
+substitutions:
+  _LOCATION: 'europe-west4'
+  _PROJECT_ID: 'anthony-infra-ci-project'
+  _ARTIFACT_REGISTRY_REPO: 'anthony-infra-repo'
+  _IMAGE_NAME: 'anthony-infra'
+  #_BUCKET_NAME: 'anthony-infra-bucket'
+  _SHORT_SHA: 'manual-build'
+  _ENV: 'dev'

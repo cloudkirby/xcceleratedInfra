@@ -1,0 +1,11 @@
+# Git
+.gitignore
+.github
+
+main.tf
+variables.tf
+.terraform.lock.hcl
+.terraform
+
+cloudbuild.yaml
+Dockerfile

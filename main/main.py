@@ -1,3 +1,9 @@
+import os
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     return f'Hi, {name}'  # Press ⌘F8 to toggle the breakpoint.
@@ -5,5 +11,7 @@ def print_hi(name):
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print(print_hi('PyCharm'))
+    port = int(os.environ.get('PORT', 8080))
+    app.run(host='0.0.0.0', port=port)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
