@@ -2,3 +2,4 @@ pytest
 flask
 google-cloud-storage
 pandas
+cloud-sql-python-connector
